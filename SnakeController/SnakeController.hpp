@@ -7,9 +7,13 @@
 
 #include "IEventHandler.hpp"
 #include "SnakeInterface.hpp"
+#include "SnakeWorld.hpp"
+#include "SnakeSegments.hpp"
 
 class Event;
 class IPort;
+class SnakeWorld;
+class SnakeSegments;
 
 namespace Snake
 {
@@ -25,6 +29,7 @@ struct UnexpectedEventException : std::runtime_error
 
 class Controller : public IEventHandler
 {
+    friend class SnakeSegments;
 public:
     Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePort, std::string const& p_config);
 
@@ -33,22 +38,12 @@ public:
 
     void receive(std::unique_ptr<Event> e) override;
 
+    
 private:
-    IPort& m_displayPort;
-    IPort& m_foodPort;
-    IPort& m_scorePort;
-
-    std::pair<int, int> m_mapDimension;
-    std::pair<int, int> m_foodPosition;
-
-    struct Segment
-    {
-        int x;
-        int y;
-    };
-
-    std::list<Segment> m_segments;
-    Direction m_currentDirection;
+    SnakeWorld m_snakeWorld;
+    SnakeSegments m_snakeSegments;
+    
+    
 
     void handleTimeoutInd();
     void handleDirectionInd(std::unique_ptr<Event>);
@@ -57,10 +52,10 @@ private:
     void handlePauseInd(std::unique_ptr<Event>);
 
     bool isSegmentAtPosition(int x, int y) const;
-    Segment calculateNewHead() const;
-    void updateSegmentsIfSuccessfullMove(Segment const& newHead);
-    void addHeadSegment(Segment const& newHead);
-    void removeTailSegmentIfNotScored(Segment const& newHead);
+    SnakeSegments::Segment calculateNewHead() const;
+    void updateSegmentsIfSuccessfullMove(SnakeSegments::Segment const& newHead);
+    void addHeadSegment(SnakeSegments::Segment const& newHead);
+    void removeTailSegmentIfNotScored(SnakeSegments::Segment const& newHead);
     void removeTailSegment();
 
     bool isPositionOutsideMap(int x, int y) const;
