@@ -58,6 +58,7 @@ class SnakeSegments{
         Segment seg{newX,newY};
         m_segments.push_back(seg);
     }
+
     std::list<Segment> m_segments;
     Direction m_currentDirection;
     int length;
