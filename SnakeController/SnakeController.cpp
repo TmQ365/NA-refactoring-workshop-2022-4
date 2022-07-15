@@ -18,7 +18,7 @@ UnexpectedEventException::UnexpectedEventException()
 
 Controller::Controller(IPort& p_displayPort, IPort& p_foodPort, IPort& p_scorePort, std::string const& p_config)
     : m_snakeWorld{p_displayPort, p_foodPort, p_scorePort},
-      m_paused(false)
+      m_paused(false), m_snakeSegments()
 {
     std::istringstream istr(p_config);
     char w, f, s, d;
@@ -116,7 +116,7 @@ void Controller::removeTailSegment()
 void Controller::addHeadSegment(SnakeSegments::Segment const& newHead)
 {
     m_snakeSegments.m_segments.push_front(newHead);
-
+    m_snakeSegments.length++;
     DisplayInd placeNewHead;
     placeNewHead.x = newHead.x;
     placeNewHead.y = newHead.y;
@@ -137,11 +137,19 @@ void Controller::removeTailSegmentIfNotScored(SnakeSegments::Segment const& newH
 
 void Controller::updateSegmentsIfSuccessfullMove(SnakeSegments::Segment const& newHead)
 {
+    ScoreInd scrInd;
+
     if (isSegmentAtPosition(newHead.x, newHead.y) or isPositionOutsideMap(newHead.x, newHead.y)) {
+        scrInd.value = 0;
         m_snakeWorld.m_scorePort.send(std::make_unique<EventT<LooseInd>>());
+        //m_snakeWorld.m_scorePort.send(std::make_unique<EventT<ScoreInd>>());
     } else {
+       
+        
         addHeadSegment(newHead);
+        scrInd.value = m_snakeSegments.getLength();
         removeTailSegmentIfNotScored(newHead);
+       // m_snakeWorld.m_scorePort.send(std::make_unique<EventT<ScoreInd>>());
     }
 }
 

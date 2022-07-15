@@ -28,7 +28,14 @@ bool perpendicular(Direction dir1, Direction dir2)
         }
 
 class SnakeSegments{
+
+    
     public:
+
+    SnakeSegments():length(0){} 
+
+    int getLength(){return length;}
+
     void setDirection(Snake::Direction d){
         m_currentDirection = d;
     }
@@ -38,13 +45,14 @@ class SnakeSegments{
         int y;
     };
     Segment calculateNewHead() const{
+        
         Segment const& currentHead = m_segments.front();
 
-    Segment newHead;
-    newHead.x = currentHead.x + (isHorizontal(m_currentDirection) ? isPositive(m_currentDirection) ? 1 : -1 : 0);
-    newHead.y = currentHead.y + (isVertical(m_currentDirection) ? isPositive(m_currentDirection) ? 1 : -1 : 0);
+        Segment newHead;
+        newHead.x = currentHead.x + (isHorizontal(m_currentDirection) ? isPositive(m_currentDirection) ? 1 : -1 : 0);
+        newHead.y = currentHead.y + (isVertical(m_currentDirection) ? isPositive(m_currentDirection) ? 1 : -1 : 0);
 
-    return newHead;
+        return newHead;
     }
     void setSegment(int newX, int newY){
         Segment seg{newX,newY};
@@ -52,7 +60,7 @@ class SnakeSegments{
     }
     std::list<Segment> m_segments;
     Direction m_currentDirection;
-
+    int length;
 
 };
     }
